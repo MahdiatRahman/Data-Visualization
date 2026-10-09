@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Mental Health of University Student Life </title>
+ 
+<!-- Typefaces: Fraunces for display/headline (academic, warm serif), Inter for body/UI -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="style.css">
+<!-- Set theme before first paint so there's no flash of the wrong theme -->
+<script>document.documentElement.setAttribute('data-theme', localStorage.getItem('wsl-theme') || 'dark');</script>
+</head>
+<body>
+ 
+<!-- ============================================================
+     THEME TOGGLE — fixed top-right, persists via localStorage
+     ============================================================ -->
+<button id="theme-toggle" aria-label="Switch between dark and light theme" title="Toggle theme">
+<span class="theme-icon" aria-hidden="true">☾</span>
+<span class="theme-label">DARK</span>
+</button>
+ 
+<a class="skip-reset" id="reset-view" role="button" tabindex="0" aria-label="Reset all filters to their default state">Reset</a>
+ 
+<!-- ============================================================
+     FLOATING AVATAR — fixed on the right side of the viewport,
+     visible across every section. Its face reacts to the
+     currently-active filters (stress in the day-clock section,
+     depression status in the pressure section).
+     ============================================================ -->
+<div class="floating-avatar" id="floating-avatar" aria-hidden="true">
+<svg id="student-svg" viewBox="0 0 420 460" role="img" aria-label="Illustration of a university student whose expression reflects the filtered data">
+<!-- Populated by script.js: renderStudent() -->
+</svg>
+</div>
+ 
+<!-- ============================================================
+     PAGE HEADLINE — top-of-page title for the whole piece
+     ============================================================ -->
+<header class="page-header">
+<h1 class="page-headline">Mental Health of University Students in the Digital Age</h1>
+</header>
+ 
+<!-- ============================================================
+     SECTION 1 — RESEARCH QUESTION (opening section)
+     ============================================================ -->
+<section class="story-section research-section" id="section-1" data-section="1">
+<div class="section-inner center">
+<div class="research-card">
+<span class="research-tag">Research Question</span>
+<h2 class="research-question">How does daily social media usage influence the mental health and academic performance of university students?</h2>
+</div>
+</div>
+</section>
+ 
+<!-- ============================================================
+     SECTION 2 — THE DAY: 24-HOUR STUDENT CLOCK (Dataset 1)
+     ============================================================ -->
+<section class="story-section dashboard-section" id="section-3" data-section="2">
+<div class="section-inner">
+<h2 class="dashboard-title">The day, as a 24-hour clock</h2>
+ 
+    <div class="dashboard-grid">
+<aside class="filter-panel" id="clock-filters">
+<h3 class="filter-heading">Filters</h3>
+ 
+        <div class="filter-group">
+<span class="filter-label">Stress level</span>
+<div class="filter-toggle-row" id="clock-stress-toggle">
+<button class="filter-toggle" data-value="all" type="button">All</button>
+<button class="filter-toggle" data-value="low" type="button">Low</button>
+<button class="filter-toggle" data-value="moderate" type="button">Moderate</button>
+<button class="filter-toggle" data-value="high" type="button">High</button>
+</div>
+</div>
+ 
+        <div class="filter-group">
+<span class="filter-label">Sleep hours / day <b id="clock-sleep-val"></b></span>
+<input type="range" id="clock-sleep-min" min="0" max="10" step="0.5" value="0" class="filter-range">
+</div>
+<div class="filter-group">
+<span class="filter-label">Study hours / day <b id="clock-study-val"></b></span>
+<input type="range" id="clock-study-min" min="0" max="12" step="0.5" value="0" class="filter-range">
+</div>
+<div class="filter-group">
+<span class="filter-label">Social hours / day <b id="clock-social-val"></b></span>
+<input type="range" id="clock-social-min" min="0" max="8" step="0.5" value="0" class="filter-range">
+</div>
+<div class="filter-group">
+<span class="filter-label">Physical activity / day <b id="clock-active-val"></b></span>
+<input type="range" id="clock-active-min" min="0" max="6" step="0.5" value="0" class="filter-range">
+</div>
+<div class="filter-group">
+<span class="filter-label">GPA at least <b id="clock-gpa-val"></b></span>
+<input type="range" id="clock-gpa-min" min="1" max="4" step="0.1" value="1" class="filter-range">
+</div>
+ 
+        <button class="filter-reset" id="clock-reset" type="button">Reset filters</button>
+<p class="filter-note" id="clock-count"></p>
+</aside>
+ 
+      <div class="dashboard-main">
+<div class="chart-card">
+<div class="chart-card-head">
+<h4>Average day pattern</h4>
+</div>
+<div class="clock-layout">
+<svg id="day-clock-svg" viewBox="0 0 500 470" role="img" aria-label="Clock-face chart of the average day, broken into sleep, study, social, activity and extracurricular time, with one dot per student colored by stress level"></svg>
+</div>
+</div>
+</div>
+</div>
+ 
+    <div class="insight-box" id="clock-insight"></div>
+</div>
+</section>
+ 
+<!-- ============================================================
+     SECTION 3 — THE PRESSURE: DEPRESSION DATA (Dataset 2)
+     ============================================================ -->
+<section class="story-section dashboard-section" id="section-4" data-section="3">
+<div class="section-inner">
+<h2 class="dashboard-title">The pressure behind it</h2> 
+    <div class="dashboard-grid">
+<aside class="filter-panel" id="pressure-filters">
+<h3 class="filter-heading">Filters</h3>
+ 
+        <div class="filter-group">
+<span class="filter-label">Depression status</span>
+<div class="filter-toggle-row" id="pressure-status-toggle">
+<button class="filter-toggle" data-value="all" type="button">All</button>
+<button class="filter-toggle" data-value="yes" type="button">Depressed</button>
+<button class="filter-toggle" data-value="no" type="button">Not depressed</button>
+</div>
+</div>
+ 
+        <div class="filter-group">
+<span class="filter-label">Gender</span>
+<select id="pressure-gender" class="filter-select">
+<option value="all">All</option>
+<option value="Male">Male</option>
+<option value="Female">Female</option>
+</select>
+</div>
+ 
+        <div class="filter-group">
+<span class="filter-label">Age at least <b id="pressure-age-val"></b></span>
+<input type="range" id="pressure-age-min" min="18" max="34" step="1" value="18" class="filter-range">
+</div>
+ 
+        <div class="filter-group">
+<span class="filter-label">Academic pressure at least <b id="pressure-pressure-val"></b></span>
+<input type="range" id="pressure-pressure-min" min="1" max="5" step="0.5" value="1" class="filter-range">
+</div>
+ 
+        <div class="filter-group">
+<span class="filter-label">Study satisfaction at least <b id="pressure-satisfaction-val"></b></span>
+<input type="range" id="pressure-satisfaction-min" min="1" max="5" step="0.5" value="1" class="filter-range">
+</div>
+ 
+        <div class="filter-group">
+<span class="filter-label">Financial stress at least <b id="pressure-financial-val"></b></span>
+<input type="range" id="pressure-financial-min" min="1" max="5" step="0.5" value="1" class="filter-range">
+</div>
+ 
+        <div class="filter-group">
+<span class="filter-label">Family history of mental illness</span>
+<select id="pressure-family" class="filter-select">
+<option value="all">All</option>
+<option value="yes">Yes</option>
+<option value="no">No</option>
+</select>
+</div>
+ 
+        <button class="filter-reset" id="pressure-reset" type="button">Reset filters</button>
+<p class="filter-note" id="pressure-count"></p>
+</aside>
+ 
+      <div class="dashboard-main">
+<div class="chart-card">
+<div class="chart-card-head">
+<h4>Pressure profile</h4>
+<span class="chart-card-sub" id="radar-sub">Depressed vs. not depressed, group averages</span>
+</div>
+<div class="radar-layout">
+<svg id="pressure-radar-svg" viewBox="0 0 380 380" role="img" aria-label="Radar chart comparing depressed and non-depressed students across academic pressure, study hours, financial stress, study satisfaction and sleep duration"></svg>
+<div class="radar-table" id="radar-table"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+ 
+<footer class="site-footer">
+</footer>
+ 
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mental Health of University Students in the Digital Age — Data Science Project</title>
+  <meta name="description"
+    content="Data Science Project exploring how daily social media usage influences the mental health and academic performance of university students." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="index.css" />
+</head>
+
+<body>
+
+  <!-- Ambient background blobs -->
+  <div class="bg-blob bg-blob--1" aria-hidden="true"></div>
+  <div class="bg-blob bg-blob--2" aria-hidden="true"></div>
+  <div class="bg-blob bg-blob--3" aria-hidden="true"></div>
+
+  <div class="app-shell">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" role="complementary" aria-label="Filter controls">
+
+      <div class="sidebar__brand">
+        <div class="sidebar__brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" />
+          </svg>
+        </div>
+        <div>
+
+          <span class="sidebar__brand-sub">Social Media Impact</span>
+        </div>
+      </div>
+
+      <!-- Active count card -->
+      <div class="stat-card" id="stat-card">
+        <div class="stat-card__label">Active Students</div>
+        <div class="stat-card__value" id="student-count">—</div>
+        <div class="stat-card__sub" id="student-pct">of total dataset</div>
+        <div class="stat-card__bar">
+          <div class="stat-card__bar-fill" id="stat-bar-fill"></div>
+        </div>
+      </div>
+
+      <!-- Academic Level filter -->
+      <div class="filter-group">
+        <div class="filter-group__header">
+          <svg class="filter-group__icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path
+              d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3z" />
+            <path
+              d="M3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762z" />
+            <path
+              d="M9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
+          </svg>
+          Academic Level
+        </div>
+        <div class="pill-group" id="filter-academic" role="group" aria-label="Filter by academic level">
+          <button class="pill pill--active" data-filter="academic" data-value="All" id="acad-all">All</button>
+          <button class="pill" data-filter="academic" data-value="Undergraduate" id="acad-undergrad">Undergrad</button>
+          <button class="pill" data-filter="academic" data-value="Graduate" id="acad-grad">Graduate</button>
+          <button class="pill" data-filter="academic" data-value="High School" id="acad-hs">High School</button>
+        </div>
+      </div>
+
+      <!-- Gender filter -->
+      <div class="filter-group">
+        <div class="filter-group__header">
+          <svg class="filter-group__icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+          </svg>
+          Gender
+        </div>
+        <div class="pill-group" id="filter-gender" role="group" aria-label="Filter by gender">
+          <button class="pill pill--active" data-filter="gender" data-value="All" id="gen-all">All</button>
+          <button class="pill" data-filter="gender" data-value="Male" id="gen-male">Male</button>
+          <button class="pill" data-filter="gender" data-value="Female" id="gen-female">Female</button>
+        </div>
+      </div>
+
+      <!-- Support filter -->
+      <div class="filter-group">
+        <div class="filter-group__header">
+          <svg class="filter-group__icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd"
+              d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+              clip-rule="evenodd" />
+          </svg>
+          Sought Support
+        </div>
+        <div class="pill-group" id="filter-support" role="group" aria-label="Filter by sought support">
+          <button class="pill pill--active" data-filter="support" data-value="All" id="sup-all">All</button>
+          <button class="pill" data-filter="support" data-value="Yes" id="sup-yes">Yes</button>
+          <button class="pill" data-filter="support" data-value="No" id="sup-no">No</button>
+        </div>
+      </div>
+
+      <!-- Job filter -->
+      <div class="filter-group">
+        <div class="filter-group__header">
+          <svg class="filter-group__icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd"
+              d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z"
+              clip-rule="evenodd" />
+          </svg>
+          Part-Time Job
+        </div>
+        <div class="pill-group" id="filter-job" role="group" aria-label="Filter by part time job">
+          <button class="pill pill--active" data-filter="job" data-value="All" id="job-all">All</button>
+          <button class="pill" data-filter="job" data-value="Yes" id="job-yes">Yes</button>
+          <button class="pill" data-filter="job" data-value="No" id="job-no">No</button>
+        </div>
+      </div>
+
+      <!-- Usage filter -->
+      <div class="filter-group">
+        <div class="filter-group__header">
+          <svg class="filter-group__icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
+          </svg>
+          Social Media Use
+        </div>
+        <div class="pill-group" id="filter-usage" role="group" aria-label="Filter by usage">
+          <button class="pill pill--active" data-filter="usage" data-value="All">All</button>
+          <button class="pill" data-filter="usage" data-value="High">High (5h+)</button>
+          <button class="pill" data-filter="usage" data-value="Medium">Med (2-5h)</button>
+          <button class="pill" data-filter="usage" data-value="Low">Low (&lt;2h)</button>
+        </div>
+      </div>
+
+      <!-- Sleep filter -->
+      <div class="filter-group">
+        <div class="filter-group__header">
+          <svg class="filter-group__icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>
+          </svg>
+          Sleep Hour
+        </div>
+        <div class="pill-group" id="filter-sleep" role="group" aria-label="Filter by sleep">
+          <button class="pill pill--active" data-filter="sleep" data-value="All">All</button>
+          <button class="pill" data-filter="sleep" data-value="Good">Good (7h+)</button>
+          <button class="pill" data-filter="sleep" data-value="Poor">Poor (&lt;7h)</button>
+        </div>
+      </div>
+
+      <!-- Legend -->
+      <div class="legend-section">
+        <div class="legend-section__title">Flow Stages</div>
+        <ul class="legend-list" id="legend-list" aria-label="Flow stage legend">
+          <li class="legend-item"><span class="legend-item__color" style="background: var(--c-cyan)"></span> Stage 1:
+            Usage Level</li>
+          <li class="legend-item"><span class="legend-item__color" style="background: var(--c-purple)"></span> Stage 2:
+            Platform</li>
+          <li class="legend-item"><span class="legend-item__color" style="background: var(--c-emerald)"></span> Stage 3:
+            Impact</li>
+          <li class="legend-item"><span class="legend-item__color" style="background: var(--c-amber)"></span> Stage 4:
+            Academics</li>
+        </ul>
+      </div>
+
+      <div class="sidebar__footer">
+        <p>Data: Social Media Impact on Students</p>
+        <p>n = <span id="total-count">—</span> records</p>
+      </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content" role="main">
+
+      <!-- Header -->
+      <header class="page-header">
+        <div class="page-header__left">
+          <h1 class="page-header__title">Mental Health of University Students in the Digital Age</h1>
+          <p class="page-header__subtitle">Data Science Project</p>
+          <p class="page-header__research-q">Research Question: &ldquo;How does daily social media usage influence the
+            mental health and academic performance of university students?&rdquo;</p>
+        </div>
+        <div class="page-header__controls">
+          <div class="align-control">
+            <span class="align-control__label">Node Align</span>
+            <div class="seg-control" id="align-control" role="group" aria-label="Sankey node alignment">
+              <button class="seg-btn seg-btn--active" data-align="sankeyJustify" id="align-justify">Justify</button>
+              <button class="seg-btn" data-align="sankeyLeft" id="align-left">Left</button>
+              <button class="seg-btn" data-align="sankeyRight" id="align-right">Right</button>
+            </div>
+          </div>
+          <div class="align-control">
+            <span class="align-control__label">Link Color</span>
+            <div class="seg-control" id="link-color-control" role="group" aria-label="Link color mode">
+              <button class="seg-btn seg-btn--active" data-linkcolor="source" id="lc-source">Source</button>
+              <button class="seg-btn" data-linkcolor="target" id="lc-target">Target</button>
+              <button class="seg-btn" data-linkcolor="source-target" id="lc-gradient">Gradient</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Stage labels bar -->
+      <div class="stage-labels" id="stage-labels" aria-label="Flow stage labels">
+        <div class="stage-label" data-stage="0">
+          <div class="stage-label__num">01</div>
+          <div class="stage-label__name">Usage Level</div>
+        </div>
+        <div class="stage-label" data-stage="1">
+          <div class="stage-label__num">02</div>
+          <div class="stage-label__name">Platform</div>
+        </div>
+        <div class="stage-label" data-stage="2">
+          <div class="stage-label__num">03</div>
+          <div class="stage-label__name">Overall Impact</div>
+        </div>
+        <div class="stage-label" data-stage="3">
+          <div class="stage-label__num">04</div>
+          <div class="stage-label__name">Academic Effect</div>
+        </div>
+      </div>
+
+      <!-- Sankey chart card -->
+      <div class="chart-card" id="chart-card" style="min-height: 450px;">
+        <!-- Loading state -->
+        <div class="chart-loader" id="chart-loader" role="status" aria-label="Loading chart">
+          <div class="spinner"></div>
+          <span>Loading dataset…</span>
+        </div>
+        <!-- SVG will be injected here -->
+        <div class="chart-wrapper" id="chart-wrapper" aria-label="Sankey diagram"></div>
+      </div>
+
+      <!-- Second row charts: Radar Chart -->
+      <div class="charts-row" style="display: flex; gap: 1.5rem; height: 400px; flex-shrink: 0;">
+        <div class="chart-card" style="flex: 1; display: flex; flex-direction: column;">
+          <h3 class="chart-title"
+            style="padding: 1rem 1rem 0; font-size: 1rem; color: var(--text-main); font-family: var(--font-display);">
+            Average Student Profile</h3>
+          <div class="chart-wrapper" id="radar-chart-wrapper" aria-label="Radar Chart" style="flex: 1; min-height: 0;">
+          </div>
+        </div>
+        <div class="chart-card" style="flex: 1; display: flex; flex-direction: column;">
+          <h3 class="chart-title" style="padding: 1rem 1rem 0; font-size: 1rem; color: var(--text-main); font-family: var(--font-display);">Mental Health Factors</h3>
+          <div class="chart-wrapper" id="bar-chart-wrapper" aria-label="Bar Chart" style="flex: 1; min-height: 0;"></div>
+        </div>
+      </div>
+
+      <!-- Bottom mini-stats row -->
+      <div class="mini-stats-row" id="mini-stats-row">
+        <div class="mini-stat" id="ms-usage">
+          <div class="mini-stat__icon ms-cyan">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="mini-stat__body">
+            <div class="mini-stat__label">High Usage (5h+)</div>
+            <div class="mini-stat__value" id="ms-high-usage">—</div>
+          </div>
+        </div>
+        <div class="mini-stat" id="ms-neg">
+          <div class="mini-stat__icon ms-rose">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="mini-stat__body">
+            <div class="mini-stat__label">Negative Impact</div>
+            <div class="mini-stat__value" id="ms-negative">—</div>
+          </div>
+        </div>
+        <div class="mini-stat" id="ms-pos">
+          <div class="mini-stat__icon ms-emerald">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="mini-stat__body">
+            <div class="mini-stat__label">Positive Impact</div>
+            <div class="mini-stat__value" id="ms-positive">—</div>
+          </div>
+        </div>
+        <div class="mini-stat" id="ms-acad">
+          <div class="mini-stat__icon ms-amber">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+              <path fill-rule="evenodd"
+                d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"
+                clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="mini-stat__body">
+            <div class="mini-stat__label">Affects Academics (Yes)</div>
+            <div class="mini-stat__value" id="ms-affects">—</div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Tooltip (floating) -->
+  <div class="tooltip" id="tooltip" role="tooltip" aria-live="polite" aria-hidden="true">
+    <div class="tooltip__inner" id="tooltip-inner"></div>
+  </div>
+
+  <!-- D3 v7 + d3-sankey -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+  <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+  <script src="data.js"></script>
+  <script src="data2.js"></script>
+  <script src="d3.js"></script>
+</body>
+
+</html>
